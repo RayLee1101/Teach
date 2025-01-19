@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue3.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="box" style="display: flex; flex-direction: row;">
+            <div class="data">
+                <div class="calendar">
+                    <div class="calendar_control">
+                        <div style="cursor: pointer;"><<前一個月</div>
+                        <div>{{year}}年{{month}}月</div>
+                        <div style="cursor: pointer;">下一個月>></div>
+                    </div>
+                    <div class="date">
+                        <div class="date_title">日</div>
+                        <div class="date_title">一</div>
+                        <div class="date_title">二</div>
+                        <div class="date_title">三</div>
+                        <div class="date_title">四</div>
+                        <div class="date_title">五</div>
+                        <div class="date_title">六</div>
+                        <div v-for="item in DayForMonth">
+                            <span v-if="item!=''">{{item.date}}</span>
+                            <span v-if="item!=''">$5000/{{item.state.filter(e => e).length}}間</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="data">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const {ref, onMounted} = Vue
+        Vue.createApp({
+            setup(){
+                DayForMonth = ref([])
+                let year = ref(2025)
+                let month = ref(1)
+                const getDay = () => {
+                    DayForMonth.value = []
+                    for(i = 0; i < new Date(year.value, month.value-1, 0).getDay(); i++){
+                        DayForMonth.value.push("")
+                    }
+                    let num = new Date(year.value, month.value, 0).getDate()
+                    for(i = 1; i <= num; i++){
+                        let time = new Date(year.value, month.value - 1, i).getTime()
+                        let state = [true, true, true, true, true, true, true, true]
+                        DayForMonth.value.push({
+                            "date": i,
+                            "state": state,
+                            "time": time
+                        })
+                    }                   
+                }
+                onMounted(() => {
+                    getDay()
+                })
+                return{year, month, DayForMonth}
+            }
+        }).mount("#app")
+    </script>
+</body>
+</html>
+<style>
+    *{
+        user-select: none;
+    }
+    .data{
+        width: 50%;
+    }
+    .calendar_control{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: CornflowerBlue;
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+        margin-bottom: 10px;
+    }
+    .date{
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        width: 100%;
+        border-radius: 10px;
+    }
+    .date > div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid cornflowerblue;
+        font-size: 20px;
+        color: cornflowerblue;
+        font-weight: 300;
+        border-radius: 10px;
+        margin: 2px;
+        height: 75px;
+        cursor: pointer;   
+    }
+    .date_title{
+        background: CornflowerBlue !important;
+        color: white !important;
+        height: 50px !important;
+    }
+</style>
